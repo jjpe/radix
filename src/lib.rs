@@ -141,7 +141,7 @@ impl RadixNum {
     /// the represented value, but it does change its representation.
     pub fn with_radix(&self, radix: usize) -> RadixResult<Self> {
         let digits_radix_x: String =
-            Self::dec_to_radix_x(radix,  self.as_decimal()?,  None)?;
+            Self::dec_to_radix_x(radix,  self.as_decimal()?)?;
         Ok(match radix {
              2 =>  RadixNum::Radix2(digits_radix_x),
              3 =>  RadixNum::Radix3(digits_radix_x),
@@ -231,8 +231,7 @@ impl RadixNum {
         self.as_str().chars().collect::<Vec<char>>().into_iter()
     }
 
-    fn dec_to_radix_x(radix: usize, number: usize, len: Option<usize>)
-                      -> RadixResult<String> {
+    fn dec_to_radix_x(radix: usize, number: usize) -> RadixResult<String> {
         if number == 0 { return Ok(String::from("0")) }
 
         let digits: Vec<char> = number.to_string().chars().collect();
@@ -242,7 +241,6 @@ impl RadixNum {
         debug!("\n");
         debug!("[dec_to_radix_x] radix:   {:?}", radix);
         debug!("[dec_to_radix_x] number: {:?}", number);
-        debug!("[dec_to_radix_x] len:    {:?}", len);
         debug!("[dec_to_radix_x] digits: {:?}", digits);
         debug!("[dec_to_radix_x] stack: {:?}", stack);
 
@@ -279,13 +277,6 @@ impl RadixNum {
                 Some(digit) => return_val += digit.to_string().as_ref(),
                 None => return Err(RadixErr::FailedToPopFromStack),
             }
-        }
-        if let Some(len) = len {
-            let padding: String = repeat("0", len);
-            let total: String = padding + return_val.trim();
-            return_val = total.chars()
-                .skip(total.len() - len)
-                .collect();
         }
         debug!("[dec_to_radix_x] return_val: {}", return_val);
         Ok(return_val)
@@ -366,22 +357,11 @@ fn modulus(a: usize, b: usize) -> usize {
     ((a % b) + b) % b
 }
 
-fn repeat(token: &str, times: usize) -> String {
-    let mut string = String::new();
-    for _ in 0 .. times {  string.push_str(token);  }
-    string
-}
-
-
-
-
-
 
 
 #[cfg(test)]
 mod tests {
     use *;
-
 
     #[test]
     fn from_str() {
