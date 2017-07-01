@@ -81,6 +81,7 @@ pub enum RadixNum {
 impl RadixNum {
     /// Convert a `number` encoded in a certain `radix` to a `RadixNum`.
     pub fn from_str(number: &str, radix: usize) -> RadixResult<Self> {
+        if number.is_empty() { return Err(RadixErr::EmptyInput); }
         if !is_radix_valid(radix) { return Err(RadixErr::RadixNotSupported(radix)) }
         let number: String = number.trim().to_uppercase();
 
