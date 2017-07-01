@@ -27,6 +27,14 @@ pub enum RadixErr {
     FailedToUppercase,
     IllegalChar(char),
     IllegalDigit(usize),
+    InvalidDigit { digit: char, radix: usize },
+}
+
+
+const MAX_RADIX: usize = 36;
+
+fn is_radix_valid(radix: usize) -> bool {
+    radix <= MAX_RADIX
 }
 
 
@@ -71,9 +79,66 @@ pub enum RadixNum {
 }
 
 impl RadixNum {
+    /// Convert a `number` encoded in a certain `radix` to a `RadixNum`.
+    pub fn from_str(number: &str, radix: usize) -> RadixResult<Self> {
+        if !is_radix_valid(radix) { return Err(RadixErr::RadixNotSupported(radix)) }
+        let number: String = number.trim().to_uppercase();
+
+        let is_valid_digit = |d|  {
+            let x = '0' <= d  &&  d <= '9';
+            let y = 'A' <= d  &&  d <= ('A' as usize + radix - 10) as u8 as char;
+            x || y
+        };
+        for digit in number.chars() { if !is_valid_digit(digit) {
+            return Err(RadixErr::InvalidDigit { digit, radix });
+        }}
+        let dec_str: String = Self::radix_x_to_dec(radix, &number)?.to_string();
+        RadixNum::Radix10(dec_str).with_radix(radix)
+    }
+
+    pub fn as_str(&self) -> &str {
+        match *self {
+             RadixNum::Radix2(ref string) |
+             RadixNum::Radix3(ref string) |
+             RadixNum::Radix4(ref string) |
+             RadixNum::Radix5(ref string) |
+             RadixNum::Radix6(ref string) |
+             RadixNum::Radix7(ref string) |
+             RadixNum::Radix8(ref string) |
+             RadixNum::Radix9(ref string) |
+            RadixNum::Radix10(ref string) |
+            RadixNum::Radix11(ref string) |
+            RadixNum::Radix12(ref string) |
+            RadixNum::Radix13(ref string) |
+            RadixNum::Radix14(ref string) |
+            RadixNum::Radix15(ref string) |
+            RadixNum::Radix16(ref string) |
+            RadixNum::Radix17(ref string) |
+            RadixNum::Radix18(ref string) |
+            RadixNum::Radix19(ref string) |
+            RadixNum::Radix20(ref string) |
+            RadixNum::Radix21(ref string) |
+            RadixNum::Radix22(ref string) |
+            RadixNum::Radix23(ref string) |
+            RadixNum::Radix24(ref string) |
+            RadixNum::Radix25(ref string) |
+            RadixNum::Radix26(ref string) |
+            RadixNum::Radix27(ref string) |
+            RadixNum::Radix28(ref string) |
+            RadixNum::Radix29(ref string) |
+            RadixNum::Radix30(ref string) |
+            RadixNum::Radix31(ref string) |
+            RadixNum::Radix32(ref string) |
+            RadixNum::Radix33(ref string) |
+            RadixNum::Radix34(ref string) |
+            RadixNum::Radix35(ref string) |
+            RadixNum::Radix36(ref string) => &string,
+        }
+    }
+
     /// Change the radix that `self` is encoded with. This does not change
     /// the represented value, but it does change its representation.
-    pub fn with_radix(&self, radix: usize) -> RadixResult<RadixNum> {
+    pub fn with_radix(&self, radix: usize) -> RadixResult<Self> {
         let digits_radix_x: String =
             Self::dec_to_radix_x(radix,  self.as_decimal()?,  None)?;
         Ok(match radix {
@@ -165,48 +230,8 @@ impl RadixNum {
         self.as_str().chars().collect::<Vec<char>>().into_iter()
     }
 
-    pub fn as_str(&self) -> &str {
-        match *self {
-             RadixNum::Radix2(ref string) |
-             RadixNum::Radix3(ref string) |
-             RadixNum::Radix4(ref string) |
-             RadixNum::Radix5(ref string) |
-             RadixNum::Radix6(ref string) |
-             RadixNum::Radix7(ref string) |
-             RadixNum::Radix8(ref string) |
-             RadixNum::Radix9(ref string) |
-            RadixNum::Radix10(ref string) |
-            RadixNum::Radix11(ref string) |
-            RadixNum::Radix12(ref string) |
-            RadixNum::Radix13(ref string) |
-            RadixNum::Radix14(ref string) |
-            RadixNum::Radix15(ref string) |
-            RadixNum::Radix16(ref string) |
-            RadixNum::Radix17(ref string) |
-            RadixNum::Radix18(ref string) |
-            RadixNum::Radix19(ref string) |
-            RadixNum::Radix20(ref string) |
-            RadixNum::Radix21(ref string) |
-            RadixNum::Radix22(ref string) |
-            RadixNum::Radix23(ref string) |
-            RadixNum::Radix24(ref string) |
-            RadixNum::Radix25(ref string) |
-            RadixNum::Radix26(ref string) |
-            RadixNum::Radix27(ref string) |
-            RadixNum::Radix28(ref string) |
-            RadixNum::Radix29(ref string) |
-            RadixNum::Radix30(ref string) |
-            RadixNum::Radix31(ref string) |
-            RadixNum::Radix32(ref string) |
-            RadixNum::Radix33(ref string) |
-            RadixNum::Radix34(ref string) |
-            RadixNum::Radix35(ref string) |
-            RadixNum::Radix36(ref string) => &string,
-        }
-    }
-
     fn dec_to_radix_x(radix: usize, number: usize, len: Option<usize>)
-                     -> Result<String, RadixErr> {
+                      -> RadixResult<String> {
         if number == 0 { return Ok(String::from("0")) }
 
         let digits: Vec<char> = number.to_string().chars().collect();
@@ -220,7 +245,7 @@ impl RadixNum {
         debug!("[dec_to_radix_x] digits: {:?}", digits);
         debug!("[dec_to_radix_x] stack: {:?}", stack);
 
-        let get_offset = |digit: usize| -> Result<u8, RadixErr> {
+        let get_offset = |digit: usize| -> RadixResult<u8> {
             match digit {
                 0 ...  9 => Ok('0' as u8), //  1u8 => '1',   2u8 =>  '2',  etc
                 10 ... 31 => Ok(55),        // 10u8 => 'A',  11u8 =>  'B',  etc
@@ -356,6 +381,16 @@ fn repeat(token: &str, times: usize) -> String {
 mod tests {
     use *;
 
+
+    #[test]
+    fn from_str() {
+        assert_eq!(
+            RadixNum::from(3735928559 as u128).with_radix(16).expect("left"),
+            RadixNum::from_str("DEADBEEF", 16).expect("right")
+        );
+    }
+
+
     #[test]
     fn dec_to_radix_x() {
         let num0 = RadixNum::from(           0 as   u8).with_radix(32).expect("0");
@@ -368,7 +403,6 @@ mod tests {
         assert_eq!(       "A", num2.as_str());
         assert_eq!(     "VVV", num3.as_str());
         assert_eq!("DEADBEEF", num4.as_str());
-
     }
 
     #[test]
