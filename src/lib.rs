@@ -31,6 +31,7 @@ pub enum RadixErr {
 
 
 /// A number in some radix.
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum RadixNum {
     #[doc(hidden)] Radix2(String),
     #[doc(hidden)] Radix3(String),
@@ -394,3 +395,5 @@ mod tests {
     }
 
 }
+
+//  LocalWords:  radix
