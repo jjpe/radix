@@ -420,4 +420,13 @@ mod tests {
         assert_eq!(Ok(462058535375), num4.as_decimal());
     }
 
+    #[test]
+    fn digit_iterator() {
+        let num = RadixNum::from(462058535375 as u128)
+            .with_radix(32)
+            .expect("DEADBEEF");
+        let digits: Vec<char> = num.digits().collect();
+        assert_eq!(vec!['D', 'E', 'A', 'D', 'B', 'E', 'E', 'F'], digits);
+    }
+
 }
