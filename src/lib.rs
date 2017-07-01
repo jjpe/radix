@@ -70,6 +70,8 @@ pub enum RadixNum {
 }
 
 impl RadixNum {
+    /// Change the radix that `self` is encoded with. This does not change
+    /// the represented value, but it does change its representation.
     pub fn with_radix(&self, radix: usize) -> RadixResult<RadixNum> {
         let digits_radix_x: String =
             Self::dec_to_radix_x(radix,  self.as_decimal()?,  None)?;
@@ -113,51 +115,53 @@ impl RadixNum {
         })
     }
 
+    /// Retrieve the radix that `self` is encoded with.
+    pub fn radix(&self) -> usize {
+        match *self {
+             RadixNum::Radix2(_) => 2,
+             RadixNum::Radix3(_) => 3,
+             RadixNum::Radix4(_) => 4,
+             RadixNum::Radix5(_) => 5,
+             RadixNum::Radix6(_) => 6,
+             RadixNum::Radix7(_) => 7,
+             RadixNum::Radix8(_) => 8,
+             RadixNum::Radix9(_) => 9,
+            RadixNum::Radix10(_) => 10,
+            RadixNum::Radix11(_) => 11,
+            RadixNum::Radix12(_) => 12,
+            RadixNum::Radix13(_) => 13,
+            RadixNum::Radix14(_) => 14,
+            RadixNum::Radix15(_) => 15,
+            RadixNum::Radix16(_) => 16,
+            RadixNum::Radix17(_) => 17,
+            RadixNum::Radix18(_) => 18,
+            RadixNum::Radix19(_) => 19,
+            RadixNum::Radix20(_) => 20,
+            RadixNum::Radix21(_) => 21,
+            RadixNum::Radix22(_) => 22,
+            RadixNum::Radix23(_) => 23,
+            RadixNum::Radix24(_) => 24,
+            RadixNum::Radix25(_) => 25,
+            RadixNum::Radix26(_) => 26,
+            RadixNum::Radix27(_) => 27,
+            RadixNum::Radix28(_) => 28,
+            RadixNum::Radix29(_) => 29,
+            RadixNum::Radix30(_) => 30,
+            RadixNum::Radix31(_) => 31,
+            RadixNum::Radix32(_) => 32,
+            RadixNum::Radix33(_) => 33,
+            RadixNum::Radix34(_) => 34,
+            RadixNum::Radix35(_) => 35,
+            RadixNum::Radix36(_) => 36,
+        }
+    }
+
     pub fn as_decimal(&self) -> RadixResult<usize> {
         Self::radix_x_to_dec(self.radix(), self.as_str())
     }
 
     pub fn digits<'c>(&'c self) -> impl Iterator<Item=char> {
-        match *self {
-             RadixNum::Radix2(ref string) |
-             RadixNum::Radix3(ref string) |
-             RadixNum::Radix4(ref string) |
-             RadixNum::Radix5(ref string) |
-             RadixNum::Radix6(ref string) |
-             RadixNum::Radix7(ref string) |
-             RadixNum::Radix8(ref string) |
-             RadixNum::Radix9(ref string) |
-            RadixNum::Radix10(ref string) |
-            RadixNum::Radix11(ref string) |
-            RadixNum::Radix12(ref string) |
-            RadixNum::Radix13(ref string) |
-            RadixNum::Radix14(ref string) |
-            RadixNum::Radix15(ref string) |
-            RadixNum::Radix16(ref string) |
-            RadixNum::Radix17(ref string) |
-            RadixNum::Radix18(ref string) |
-            RadixNum::Radix19(ref string) |
-            RadixNum::Radix20(ref string) |
-            RadixNum::Radix21(ref string) |
-            RadixNum::Radix22(ref string) |
-            RadixNum::Radix23(ref string) |
-            RadixNum::Radix24(ref string) |
-            RadixNum::Radix25(ref string) |
-            RadixNum::Radix26(ref string) |
-            RadixNum::Radix27(ref string) |
-            RadixNum::Radix28(ref string) |
-            RadixNum::Radix29(ref string) |
-            RadixNum::Radix30(ref string) |
-            RadixNum::Radix31(ref string) |
-            RadixNum::Radix32(ref string) |
-            RadixNum::Radix33(ref string) |
-            RadixNum::Radix34(ref string) |
-            RadixNum::Radix35(ref string) |
-            RadixNum::Radix36(ref string) => {
-                // TODO: this impl is suboptimal, but should work for now.
-                string.chars().collect::<Vec<char>>().into_iter()
-            },
-        }
+        self.as_str().chars().collect::<Vec<char>>().into_iter()
     }
 
     pub fn as_str(&self) -> &str {
@@ -197,46 +201,6 @@ impl RadixNum {
             RadixNum::Radix34(ref string) |
             RadixNum::Radix35(ref string) |
             RadixNum::Radix36(ref string) => &string,
-        }
-    }
-
-    pub fn radix(&self) -> usize {
-        match *self {
-             RadixNum::Radix2(_) => 2,
-             RadixNum::Radix3(_) => 3,
-             RadixNum::Radix4(_) => 4,
-             RadixNum::Radix5(_) => 5,
-             RadixNum::Radix6(_) => 6,
-             RadixNum::Radix7(_) => 7,
-             RadixNum::Radix8(_) => 8,
-             RadixNum::Radix9(_) => 9,
-            RadixNum::Radix10(_) => 10,
-            RadixNum::Radix11(_) => 11,
-            RadixNum::Radix12(_) => 12,
-            RadixNum::Radix13(_) => 13,
-            RadixNum::Radix14(_) => 14,
-            RadixNum::Radix15(_) => 15,
-            RadixNum::Radix16(_) => 16,
-            RadixNum::Radix17(_) => 17,
-            RadixNum::Radix18(_) => 18,
-            RadixNum::Radix19(_) => 19,
-            RadixNum::Radix20(_) => 20,
-            RadixNum::Radix21(_) => 21,
-            RadixNum::Radix22(_) => 22,
-            RadixNum::Radix23(_) => 23,
-            RadixNum::Radix24(_) => 24,
-            RadixNum::Radix25(_) => 25,
-            RadixNum::Radix26(_) => 26,
-            RadixNum::Radix27(_) => 27,
-            RadixNum::Radix28(_) => 28,
-            RadixNum::Radix29(_) => 29,
-            RadixNum::Radix30(_) => 30,
-            RadixNum::Radix31(_) => 31,
-            RadixNum::Radix32(_) => 32,
-            RadixNum::Radix33(_) => 33,
-            RadixNum::Radix34(_) => 34,
-            RadixNum::Radix35(_) => 35,
-            RadixNum::Radix36(_) => 36,
         }
     }
 
