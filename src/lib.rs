@@ -291,7 +291,7 @@ impl RadixNum {
         let mut return_val: usize = 0;
 
         fn digit_offset(digit: char) -> Result<u8, RadixErr> {
-            println!("[digit_offset] digit: {}", digit);
+            debug!("[digit_offset] digit: {}", digit);
             match digit {
                 '0'...'9' => Ok('0' as u8), // '1' =>  1u8,  '2' =>  2u8 etc
                 'A'...'Z' => Ok(55),        // 'A' => 10u8,  'B' => 11u8 etc
