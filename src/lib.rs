@@ -247,7 +247,7 @@ impl RadixNum {
         let get_offset = |digit: usize| -> RadixResult<u8> {
             match digit {
                 0 ...  9 => Ok('0' as u8), //  1u8 => '1',   2u8 =>  '2',  etc
-                10 ... 31 => Ok(55),        // 10u8 => 'A',  11u8 =>  'B',  etc
+                10 ... 36 => Ok(55),        // 10u8 => 'A',  11u8 =>  'B',  etc
                 d => Err(RadixErr::IllegalDigit(d)),
             }
         };
@@ -373,30 +373,36 @@ mod tests {
 
     #[test]
     fn dec_to_radix_x() {
-        let num0 = RadixNum::from(           0 as   u8).with_radix(32).expect("0");
-        let num1 = RadixNum::from(           1 as  u16).with_radix(32).expect("1");
-        let num2 = RadixNum::from(          10 as  u32).with_radix(32).expect("A");
-        let num3 = RadixNum::from(       32767 as  u64).with_radix(32).expect("VVV");
-        let num4 = RadixNum::from(462058535375 as u128).with_radix(32).expect("DEADBEEF");
-        assert_eq!(       "0", num0.as_str());
-        assert_eq!(       "1", num1.as_str());
-        assert_eq!(       "A", num2.as_str());
-        assert_eq!(     "VVV", num3.as_str());
-        assert_eq!("DEADBEEF", num4.as_str());
+        let num0 = RadixNum::from(             0 as   u8).with_radix(32).expect("0");
+        let num1 = RadixNum::from(             1 as  u16).with_radix(32).expect("1");
+        let num2 = RadixNum::from(            10 as  u32).with_radix(32).expect("A");
+        let num3 = RadixNum::from(         32767 as  u64).with_radix(32).expect("VVV");
+        let num4 = RadixNum::from(  462058535375 as u128).with_radix(32).expect("DEADBEEF");
+        let num5 = RadixNum::from(46597557513434 as u128).with_radix(36).expect("GIMMEMORE");
+        assert_eq!(        "0", num0.as_str());
+        assert_eq!(        "1", num1.as_str());
+        assert_eq!(        "A", num2.as_str());
+        assert_eq!(      "VVV", num3.as_str());
+        assert_eq!( "DEADBEEF", num4.as_str());
+        assert_eq!("GIMMEMORE", num5.as_str());
     }
 
     #[test]
     fn radix_x_to_dec() {
-        let num0 = RadixNum::from(           0 as   u8).with_radix(32).expect("0");
-        let num1 = RadixNum::from(           1 as  u16).with_radix(32).expect("1");
-        let num2 = RadixNum::from(          10 as  u32).with_radix(32).expect("A");
-        let num3 = RadixNum::from(       32767 as  u64).with_radix(32).expect("VVV");
-        let num4 = RadixNum::from(462058535375 as u128).with_radix(32).expect("DEADBEEF");
-        assert_eq!(           Ok(0), num0.as_decimal());
-        assert_eq!(           Ok(1), num1.as_decimal());
-        assert_eq!(          Ok(10), num2.as_decimal());
-        assert_eq!(       Ok(32767), num3.as_decimal());
-        assert_eq!(Ok(462058535375), num4.as_decimal());
+        let num0 = RadixNum::from(             0 as   u8).with_radix(32).expect("0");
+        let num1 = RadixNum::from(             1 as  u16).with_radix(32).expect("1");
+        let num2 = RadixNum::from(            10 as  u32).with_radix(32).expect("A");
+        let num3 = RadixNum::from(         32767 as  u64).with_radix(32).expect("VVV");
+        let num4 = RadixNum::from(   15123093122 as  u64).with_radix(36).expect("...");
+        let num5 = RadixNum::from(  462058535375 as u128).with_radix(32).expect("DEADBEEF");
+        let num6 = RadixNum::from(46597557513433 as u128).with_radix(36).expect("GIMMEMORE");
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
     }
 
     #[test]
