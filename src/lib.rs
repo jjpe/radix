@@ -82,7 +82,7 @@ impl RadixNum {
     /// Convert a `number` encoded in a certain `radix` to a `RadixNum`.
     pub fn from_str(number: &str, radix: usize) -> RadixResult<Self> {
         if number.is_empty() { return Err(RadixErr::EmptyInput); }
-        if !is_radix_valid(radix) { return Err(RadixErr::RadixNotSupported(radix)) }
+        if !is_radix_valid(radix) { return Err(RadixErr::RadixNotSupported(radix)); }
         let number: String = number.trim().to_uppercase();
 
         let is_valid_digit = |d|  {
@@ -286,15 +286,15 @@ impl RadixNum {
         if number.is_empty() { return Err(RadixErr::EmptyInput); }
 
         let number: &str = number.trim();
-        let char_count: usize = number.chars().count();
         let number_chars: Vec<char> = number.chars().collect();
+        let char_count: usize = number_chars.len();
         let mut return_val: usize = 0;
 
-        fn digit_offset(digit: char) -> Result<u8, RadixErr> {
-            debug!("[digit_offset] digit: {}", digit);
+        #[inline(always)]
+        fn digit_to_dec(digit: char) -> Result<usize, RadixErr> {
             match digit {
-                '0'...'9' => Ok('0' as u8), // '1' =>  1u8,  '2' =>  2u8 etc
-                'A'...'Z' => Ok(55),        // 'A' => 10u8,  'B' => 11u8 etc
+                '0'...'9' => Ok(digit as usize - '0' as u8 as usize),
+                'A'...'Z' => Ok(digit as usize - 55),
                 c => Err(RadixErr::IllegalChar(c)),
             }
         }
@@ -308,16 +308,15 @@ impl RadixNum {
         debug!("[radix_x_to_dec] return val: {:?}", return_val);
         debug!("[radix_x_to_dec] for loop:");
         for (idx, &token) in number_chars.iter().rev().enumerate() {
-            let token: char = token
+            let digit: char = token
                 .to_uppercase()
                 .nth(0)
                 .ok_or_else(|| RadixErr::FailedToUppercase)?;
+            let dec_value: usize = digit_to_dec(digit)? * radix.pow(idx as u32);
+            return_val += dec_value;
             debug!("[radix_x_to_dec]   idx: {:?}", idx);
-            debug!("[radix_x_to_dec]   token: {:?}  ({}u8)", token, token as u8);
-            let offset = digit_offset(token)?;
-            let token: char = (token as u8 - offset) as char;
-            return_val += token as usize * radix.pow(idx as u32) /*- '0' as usize*/;
-            debug!("[radix_x_to_dec]   token altered: {:?}  ({}u8)", token, token as u8);
+            debug!("[radix_x_to_dec]   digit: {:?}  ({}u8)", digit, digit as u8);
+            debug!("[radix_x_to_dec]   decimal value: {}", dec_value);
             debug!("[radix_x_to_dec]   return val: {:?}", return_val);
         }
 
