@@ -370,32 +370,623 @@ mod tests {
         );
     }
 
+    #[test]
+    fn digit_iterator() {
+        let num = RadixNum::from(462058535375 as u128)
+            .with_radix(32)
+            .expect("DEADBEEF");
+        let digits: Vec<char> = num.digits().collect();
+        assert_eq!(vec!['D', 'E', 'A', 'D', 'B', 'E', 'E', 'F'], digits);
+    }
+
 
     #[test]
-    fn dec_to_radix_x() {
-        let num0 = RadixNum::from(             0 as   u8).with_radix(32).expect("0");
-        let num1 = RadixNum::from(             1 as  u16).with_radix(32).expect("1");
-        let num2 = RadixNum::from(            10 as  u32).with_radix(32).expect("A");
-        let num3 = RadixNum::from(         32767 as  u64).with_radix(32).expect("VVV");
-        let num4 = RadixNum::from(  462058535375 as u128).with_radix(32).expect("DEADBEEF");
-        let num5 = RadixNum::from(46597557513434 as u128).with_radix(36).expect("GIMMEMORE");
-        assert_eq!(        "0", num0.as_str());
-        assert_eq!(        "1", num1.as_str());
-        assert_eq!(        "A", num2.as_str());
-        assert_eq!(      "VVV", num3.as_str());
-        assert_eq!( "DEADBEEF", num4.as_str());
-        assert_eq!("GIMMEMORE", num5.as_str());
+    fn dec_to_radix2() {
+        let to_radix2 = |n: RadixNum| n.with_radix(2).expect("radix 2");
+        let num0 = to_radix2(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix2(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix2(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix2(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix2(RadixNum::from(      255 as usize));
+        let num5 = to_radix2(RadixNum::from(1_000_000 as usize));
+        assert_eq!(                   "0", num0.as_str());
+        assert_eq!(                   "1", num1.as_str());
+        assert_eq!(                "1010", num2.as_str());
+        assert_eq!(              "101010", num3.as_str());
+        assert_eq!(            "11111111", num4.as_str());
+        assert_eq!("11110100001001000000", num5.as_str());
     }
 
     #[test]
-    fn radix_x_to_dec() {
-        let num0 = RadixNum::from(             0 as   u8).with_radix(32).expect("0");
-        let num1 = RadixNum::from(             1 as  u16).with_radix(32).expect("1");
-        let num2 = RadixNum::from(            10 as  u32).with_radix(32).expect("A");
-        let num3 = RadixNum::from(         32767 as  u64).with_radix(32).expect("VVV");
-        let num4 = RadixNum::from(   15123093122 as  u64).with_radix(36).expect("...");
-        let num5 = RadixNum::from(  462058535375 as u128).with_radix(32).expect("DEADBEEF");
-        let num6 = RadixNum::from(46597557513433 as u128).with_radix(36).expect("GIMMEMORE");
+    fn dec_to_radix3() {
+        let to_radix3 = |n: RadixNum| n.with_radix(3).expect("radix 3");
+        let num0 = to_radix3(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix3(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix3(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix3(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix3(RadixNum::from(      255 as usize));
+        let num5 = to_radix3(RadixNum::from(1_000_000 as usize));
+        assert_eq!(            "0", num0.as_str());
+        assert_eq!(            "1", num1.as_str());
+        assert_eq!(          "101", num2.as_str());
+        assert_eq!(         "1120", num3.as_str());
+        assert_eq!(       "100110", num4.as_str());
+        assert_eq!("1212210202001", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix4() {
+        let to_radix4 = |n: RadixNum| n.with_radix(4).expect("radix 4");
+        let num0 = to_radix4(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix4(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix4(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix4(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix4(RadixNum::from(      255 as usize));
+        let num5 = to_radix4(RadixNum::from(1_000_000 as usize));
+        assert_eq!(         "0", num0.as_str());
+        assert_eq!(         "1", num1.as_str());
+        assert_eq!(        "22", num2.as_str());
+        assert_eq!(       "222", num3.as_str());
+        assert_eq!(      "3333", num4.as_str());
+        assert_eq!("3310021000", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix5() {
+        let to_radix5 = |n: RadixNum| n.with_radix(5).expect("radix 5");
+        let num0 = to_radix5(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix5(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix5(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix5(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix5(RadixNum::from(      255 as usize));
+        let num5 = to_radix5(RadixNum::from(1_000_000 as usize));
+        assert_eq!(        "0", num0.as_str());
+        assert_eq!(        "1", num1.as_str());
+        assert_eq!(       "20", num2.as_str());
+        assert_eq!(      "132", num3.as_str());
+        assert_eq!(     "2010", num4.as_str());
+        assert_eq!("224000000", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix6() {
+        let to_radix6 = |n: RadixNum| n.with_radix(6).expect("radix 6");
+        let num0 = to_radix6(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix6(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix6(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix6(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix6(RadixNum::from(      255 as usize));
+        let num5 = to_radix6(RadixNum::from(1_000_000 as usize));
+        assert_eq!(       "0", num0.as_str());
+        assert_eq!(       "1", num1.as_str());
+        assert_eq!(      "14", num2.as_str());
+        assert_eq!(     "110", num3.as_str());
+        assert_eq!(    "1103", num4.as_str());
+        assert_eq!("33233344", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix7() {
+        let to_radix7 = |n: RadixNum| n.with_radix(7).expect("radix 7");
+        let num0 = to_radix7(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix7(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix7(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix7(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix7(RadixNum::from(      255 as usize));
+        let num5 = to_radix7(RadixNum::from(1_000_000 as usize));
+        assert_eq!(       "0", num0.as_str());
+        assert_eq!(       "1", num1.as_str());
+        assert_eq!(      "13", num2.as_str());
+        assert_eq!(      "60", num3.as_str());
+        assert_eq!(     "513", num4.as_str());
+        assert_eq!("11333311", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix8() {
+        let to_radix8 = |n: RadixNum| n.with_radix(8).expect("radix 8");
+        let num0 = to_radix8(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix8(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix8(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix8(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix8(RadixNum::from(      255 as usize));
+        let num5 = to_radix8(RadixNum::from(1_000_000 as usize));
+        assert_eq!(      "0", num0.as_str());
+        assert_eq!(      "1", num1.as_str());
+        assert_eq!(     "12", num2.as_str());
+        assert_eq!(     "52", num3.as_str());
+        assert_eq!(    "377", num4.as_str());
+        assert_eq!("3641100", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix9() {
+        let to_radix9 = |n: RadixNum| n.with_radix(9).expect("radix 9");
+        let num0 = to_radix9(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix9(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix9(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix9(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix9(RadixNum::from(      255 as usize));
+        let num5 = to_radix9(RadixNum::from(1_000_000 as usize));
+        assert_eq!(      "0", num0.as_str());
+        assert_eq!(      "1", num1.as_str());
+        assert_eq!(     "11", num2.as_str());
+        assert_eq!(     "46", num3.as_str());
+        assert_eq!(    "313", num4.as_str());
+        assert_eq!("1783661", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix10() {
+        let to_radix10 = |n: RadixNum| n.with_radix(10).expect("radix 10");
+        let num0 = to_radix10(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix10(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix10(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix10(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix10(RadixNum::from(      255 as usize));
+        let num5 = to_radix10(RadixNum::from(1_000_000 as usize));
+        assert_eq!(      "0", num0.as_str());
+        assert_eq!(      "1", num1.as_str());
+        assert_eq!(     "10", num2.as_str());
+        assert_eq!(     "42", num3.as_str());
+        assert_eq!(    "255", num4.as_str());
+        assert_eq!("1000000", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix11() {
+        let to_radix11 = |n: RadixNum| n.with_radix(11).expect("radix 11");
+        let num0 = to_radix11(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix11(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix11(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix11(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix11(RadixNum::from(      255 as usize));
+        let num5 = to_radix11(RadixNum::from(1_000_000 as usize));
+        assert_eq!(     "0", num0.as_str());
+        assert_eq!(     "1", num1.as_str());
+        assert_eq!(     "A", num2.as_str());
+        assert_eq!(    "39", num3.as_str());
+        assert_eq!(   "212", num4.as_str());
+        assert_eq!("623351", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix12() {
+        let to_radix12 = |n: RadixNum| n.with_radix(12).expect("radix 12");
+        let num0 = to_radix12(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix12(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix12(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix12(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix12(RadixNum::from(      255 as usize));
+        let num5 = to_radix12(RadixNum::from(1_000_000 as usize));
+        assert_eq!(     "0", num0.as_str());
+        assert_eq!(     "1", num1.as_str());
+        assert_eq!(     "A", num2.as_str());
+        assert_eq!(    "36", num3.as_str());
+        assert_eq!(   "193", num4.as_str());
+        assert_eq!("402854", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix13() {
+        let to_radix13 = |n: RadixNum| n.with_radix(13).expect("radix 13");
+        let num0 = to_radix13(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix13(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix13(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix13(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix13(RadixNum::from(      255 as usize));
+        let num5 = to_radix13(RadixNum::from(1_000_000 as usize));
+        assert_eq!(     "0", num0.as_str());
+        assert_eq!(     "1", num1.as_str());
+        assert_eq!(     "A", num2.as_str());
+        assert_eq!(    "33", num3.as_str());
+        assert_eq!(   "168", num4.as_str());
+        assert_eq!("290221", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix14() {
+        let to_radix14 = |n: RadixNum| n.with_radix(14).expect("radix 14");
+        let num0 = to_radix14(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix14(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix14(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix14(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix14(RadixNum::from(      255 as usize));
+        let num5 = to_radix14(RadixNum::from(1_000_000 as usize));
+        assert_eq!(     "0", num0.as_str());
+        assert_eq!(     "1", num1.as_str());
+        assert_eq!(     "A", num2.as_str());
+        assert_eq!(    "30", num3.as_str());
+        assert_eq!(   "143", num4.as_str());
+        assert_eq!("1C0608", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix15() {
+        let to_radix15 = |n: RadixNum| n.with_radix(15).expect("radix 15");
+        let num0 = to_radix15(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix15(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix15(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix15(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix15(RadixNum::from(      255 as usize));
+        let num5 = to_radix15(RadixNum::from(1_000_000 as usize));
+        assert_eq!(     "0", num0.as_str());
+        assert_eq!(     "1", num1.as_str());
+        assert_eq!(     "A", num2.as_str());
+        assert_eq!(    "2C", num3.as_str());
+        assert_eq!(   "120", num4.as_str());
+        assert_eq!("14B46A", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix16() {
+        let to_radix16 = |n: RadixNum| n.with_radix(16).expect("radix 16");
+        let num0 = to_radix16(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix16(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix16(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix16(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix16(RadixNum::from(      255 as usize));
+        let num5 = to_radix16(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "2A", num3.as_str());
+        assert_eq!(   "FF", num4.as_str());
+        assert_eq!("F4240", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix17() {
+        let to_radix17 = |n: RadixNum| n.with_radix(17).expect("radix 17");
+        let num0 = to_radix17(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix17(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix17(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix17(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix17(RadixNum::from(      255 as usize));
+        let num5 = to_radix17(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "28", num3.as_str());
+        assert_eq!(   "F0", num4.as_str());
+        assert_eq!("BG939", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix18() {
+        let to_radix18 = |n: RadixNum| n.with_radix(18).expect("radix 18");
+        let num0 = to_radix18(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix18(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix18(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix18(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix18(RadixNum::from(      255 as usize));
+        let num5 = to_radix18(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "26", num3.as_str());
+        assert_eq!(   "E3", num4.as_str());
+        assert_eq!("9987A", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix19() {
+        let to_radix19 = |n: RadixNum| n.with_radix(19).expect("radix 19");
+        let num0 = to_radix19(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix19(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix19(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix19(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix19(RadixNum::from(      255 as usize));
+        let num5 = to_radix19(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "24", num3.as_str());
+        assert_eq!(   "D8", num4.as_str());
+        assert_eq!("7CF1B", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix20() {
+        let to_radix20 = |n: RadixNum| n.with_radix(20).expect("radix 20");
+        let num0 = to_radix20(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix20(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix20(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix20(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix20(RadixNum::from(      255 as usize));
+        let num5 = to_radix20(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "22", num3.as_str());
+        assert_eq!(   "CF", num4.as_str());
+        assert_eq!("65000", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix21() {
+        let to_radix21 = |n: RadixNum| n.with_radix(21).expect("radix 21");
+        let num0 = to_radix21(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix21(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix21(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix21(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix21(RadixNum::from(      255 as usize));
+        let num5 = to_radix21(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "20", num3.as_str());
+        assert_eq!(   "C3", num4.as_str());
+        assert_eq!("52KC1", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix22() {
+        let to_radix22 = |n: RadixNum| n.with_radix(22).expect("radix 22");
+        let num0 = to_radix22(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix22(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix22(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix22(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix22(RadixNum::from(      255 as usize));
+        let num5 = to_radix22(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "1K", num3.as_str());
+        assert_eq!(   "BD", num4.as_str());
+        assert_eq!("45K2C", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix23() {
+        let to_radix23 = |n: RadixNum| n.with_radix(23).expect("radix 23");
+        let num0 = to_radix23(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix23(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix23(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix23(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix23(RadixNum::from(      255 as usize));
+        let num5 = to_radix23(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "1J", num3.as_str());
+        assert_eq!(   "B2", num4.as_str());
+        assert_eq!("3D486", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix24() {
+        let to_radix24 = |n: RadixNum| n.with_radix(24).expect("radix 24");
+        let num0 = to_radix24(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix24(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix24(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix24(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix24(RadixNum::from(      255 as usize));
+        let num5 = to_radix24(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "1I", num3.as_str());
+        assert_eq!(   "AF", num4.as_str());
+        assert_eq!("3082G", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix25() {
+        let to_radix25 = |n: RadixNum| n.with_radix(25).expect("radix 25");
+        let num0 = to_radix25(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix25(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix25(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix25(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix25(RadixNum::from(      255 as usize));
+        let num5 = to_radix25(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "1H", num3.as_str());
+        assert_eq!(   "A5", num4.as_str());
+        assert_eq!("2E000", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix26() {
+        let to_radix26 = |n: RadixNum| n.with_radix(26).expect("radix 26");
+        let num0 = to_radix26(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix26(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix26(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix26(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix26(RadixNum::from(      255 as usize));
+        let num5 = to_radix26(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "1G", num3.as_str());
+        assert_eq!(   "9L", num4.as_str());
+        assert_eq!("24N7E", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix27() {
+        let to_radix27 = |n: RadixNum| n.with_radix(27).expect("radix 27");
+        let num0 = to_radix27(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix27(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix27(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix27(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix27(RadixNum::from(      255 as usize));
+        let num5 = to_radix27(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "1F", num3.as_str());
+        assert_eq!(   "9C", num4.as_str());
+        assert_eq!("1NLK1", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix28() {
+        let to_radix28 = |n: RadixNum| n.with_radix(28).expect("radix 28");
+        let num0 = to_radix28(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix28(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix28(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix28(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix28(RadixNum::from(      255 as usize));
+        let num5 = to_radix28(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "1E", num3.as_str());
+        assert_eq!(   "93", num4.as_str());
+        assert_eq!("1HFE8", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix29() {
+        let to_radix29 = |n: RadixNum| n.with_radix(29).expect("radix 29");
+        let num0 = to_radix29(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix29(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix29(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix29(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix29(RadixNum::from(      255 as usize));
+        let num5 = to_radix29(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "1D", num3.as_str());
+        assert_eq!(   "8N", num4.as_str());
+        assert_eq!("1C01M", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix30() {
+        let to_radix30 = |n: RadixNum| n.with_radix(30).expect("radix 30");
+        let num0 = to_radix30(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix30(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix30(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix30(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix30(RadixNum::from(      255 as usize));
+        let num5 = to_radix30(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "1C", num3.as_str());
+        assert_eq!(   "8F", num4.as_str());
+        assert_eq!("1713A", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix31() {
+        let to_radix31 = |n: RadixNum| n.with_radix(31).expect("radix 31");
+        let num0 = to_radix31(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix31(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix31(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix31(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix31(RadixNum::from(      255 as usize));
+        let num5 = to_radix31(RadixNum::from(1_000_000 as usize));
+        assert_eq!(    "0", num0.as_str());
+        assert_eq!(    "1", num1.as_str());
+        assert_eq!(    "A", num2.as_str());
+        assert_eq!(   "1B", num3.as_str());
+        assert_eq!(   "87", num4.as_str());
+        assert_eq!("12HI2", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix32() {
+        let to_radix32 = |n: RadixNum| n.with_radix(32).expect("radix 32");
+        let num0 = to_radix32(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix32(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix32(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix32(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix32(RadixNum::from(      255 as usize));
+        let num5 = to_radix32(RadixNum::from(1_000_000 as usize));
+        assert_eq!(   "0", num0.as_str());
+        assert_eq!(   "1", num1.as_str());
+        assert_eq!(   "A", num2.as_str());
+        assert_eq!(  "1A", num3.as_str());
+        assert_eq!(  "7V", num4.as_str());
+        assert_eq!("UGI0", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix33() {
+        let to_radix33 = |n: RadixNum| n.with_radix(33).expect("radix 33");
+        let num0 = to_radix33(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix33(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix33(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix33(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix33(RadixNum::from(      255 as usize));
+        let num5 = to_radix33(RadixNum::from(1_000_000 as usize));
+        assert_eq!(   "0", num0.as_str());
+        assert_eq!(   "1", num1.as_str());
+        assert_eq!(   "A", num2.as_str());
+        assert_eq!(  "19", num3.as_str());
+        assert_eq!(  "7O", num4.as_str());
+        assert_eq!("RR91", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix34() {
+        let to_radix34 = |n: RadixNum| n.with_radix(34).expect("radix 34");
+        let num0 = to_radix34(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix34(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix34(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix34(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix34(RadixNum::from(      255 as usize));
+        let num5 = to_radix34(RadixNum::from(1_000_000 as usize));
+        assert_eq!(   "0", num0.as_str());
+        assert_eq!(   "1", num1.as_str());
+        assert_eq!(   "A", num2.as_str());
+        assert_eq!(  "18", num3.as_str());
+        assert_eq!(  "7H", num4.as_str());
+        assert_eq!("PF1Q", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix35() {
+        let to_radix35 = |n: RadixNum| n.with_radix(35).expect("radix 35");
+        let num0 = to_radix35(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix35(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix35(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix35(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix35(RadixNum::from(      255 as usize));
+        let num5 = to_radix35(RadixNum::from(1_000_000 as usize));
+        assert_eq!(   "0", num0.as_str());
+        assert_eq!(   "1", num1.as_str());
+        assert_eq!(   "A", num2.as_str());
+        assert_eq!(  "17", num3.as_str());
+        assert_eq!(  "7A", num4.as_str());
+        assert_eq!("NBBF", num5.as_str());
+    }
+
+    #[test]
+    fn dec_to_radix36() {
+        let to_radix36 = |n: RadixNum| n.with_radix(36).expect("radix 36");
+        let num0 = to_radix36(RadixNum::from(        0 as u8   ));
+        let num1 = to_radix36(RadixNum::from(        1 as u16  ));
+        let num2 = to_radix36(RadixNum::from(       10 as u32  ));
+        let num3 = to_radix36(RadixNum::from(       42 as u64  ));
+        let num4 = to_radix36(RadixNum::from(      255 as usize));
+        let num5 = to_radix36(RadixNum::from(1_000_000 as usize));
+        assert_eq!(   "0", num0.as_str());
+        assert_eq!(   "1", num1.as_str());
+        assert_eq!(   "A", num2.as_str());
+        assert_eq!(  "16", num3.as_str());
+        assert_eq!(  "73", num4.as_str());
+        assert_eq!("LFLS", num5.as_str());
+    }
+
+
+
+    #[test]
+    fn radix2_to_dec() {
+        let to_radix2 = |n: RadixNum| n.with_radix(2).expect("radix 2");
+        let num0 = to_radix2(RadixNum::from(             0 as   u8));
+        let num1 = to_radix2(RadixNum::from(             1 as  u16));
+        let num2 = to_radix2(RadixNum::from(            10 as  u32));
+        let num3 = to_radix2(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix2(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix2(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix2(RadixNum::from(46597557513433 as u128));
         assert_eq!(             Ok(0), num0.as_decimal());
         assert_eq!(             Ok(1), num1.as_decimal());
         assert_eq!(            Ok(10), num2.as_decimal());
@@ -406,12 +997,649 @@ mod tests {
     }
 
     #[test]
-    fn digit_iterator() {
-        let num = RadixNum::from(462058535375 as u128)
-            .with_radix(32)
-            .expect("DEADBEEF");
-        let digits: Vec<char> = num.digits().collect();
-        assert_eq!(vec!['D', 'E', 'A', 'D', 'B', 'E', 'E', 'F'], digits);
+    fn radix3_to_dec() {
+        let to_radix3 = |n: RadixNum| n.with_radix(3).expect("radix 3");
+        let num0 = to_radix3(RadixNum::from(             0 as   u8));
+        let num1 = to_radix3(RadixNum::from(             1 as  u16));
+        let num2 = to_radix3(RadixNum::from(            10 as  u32));
+        let num3 = to_radix3(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix3(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix3(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix3(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix4_to_dec() {
+        let to_radix4 = |n: RadixNum| n.with_radix(4).expect("radix 4");
+        let num0 = to_radix4(RadixNum::from(             0 as   u8));
+        let num1 = to_radix4(RadixNum::from(             1 as  u16));
+        let num2 = to_radix4(RadixNum::from(            10 as  u32));
+        let num3 = to_radix4(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix4(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix4(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix4(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix5_to_dec() {
+        let to_radix5 = |n: RadixNum| n.with_radix(5).expect("radix 5");
+        let num0 = to_radix5(RadixNum::from(             0 as   u8));
+        let num1 = to_radix5(RadixNum::from(             1 as  u16));
+        let num2 = to_radix5(RadixNum::from(            10 as  u32));
+        let num3 = to_radix5(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix5(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix5(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix5(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix6_to_dec() {
+        let to_radix6 = |n: RadixNum| n.with_radix(6).expect("radix 6");
+        let num0 = to_radix6(RadixNum::from(             0 as   u8));
+        let num1 = to_radix6(RadixNum::from(             1 as  u16));
+        let num2 = to_radix6(RadixNum::from(            10 as  u32));
+        let num3 = to_radix6(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix6(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix6(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix6(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix7_to_dec() {
+        let to_radix7 = |n: RadixNum| n.with_radix(7).expect("radix 7");
+        let num0 = to_radix7(RadixNum::from(             0 as   u8));
+        let num1 = to_radix7(RadixNum::from(             1 as  u16));
+        let num2 = to_radix7(RadixNum::from(            10 as  u32));
+        let num3 = to_radix7(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix7(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix7(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix7(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix8_to_dec() {
+        let to_radix8 = |n: RadixNum| n.with_radix(8).expect("radix 8");
+        let num0 = to_radix8(RadixNum::from(             0 as   u8));
+        let num1 = to_radix8(RadixNum::from(             1 as  u16));
+        let num2 = to_radix8(RadixNum::from(            10 as  u32));
+        let num3 = to_radix8(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix8(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix8(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix8(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix9_to_dec() {
+        let to_radix9 = |n: RadixNum| n.with_radix(9).expect("radix 9");
+        let num0 = to_radix9(RadixNum::from(             0 as   u8));
+        let num1 = to_radix9(RadixNum::from(             1 as  u16));
+        let num2 = to_radix9(RadixNum::from(            10 as  u32));
+        let num3 = to_radix9(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix9(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix9(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix9(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix10_to_dec() {
+        let to_radix10 = |n: RadixNum| n.with_radix(10).expect("radix 10");
+        let num0 = to_radix10(RadixNum::from(             0 as   u8));
+        let num1 = to_radix10(RadixNum::from(             1 as  u16));
+        let num2 = to_radix10(RadixNum::from(            10 as  u32));
+        let num3 = to_radix10(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix10(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix10(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix10(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix11_to_dec() {
+        let to_radix11 = |n: RadixNum| n.with_radix(11).expect("radix 11");
+        let num0 = to_radix11(RadixNum::from(             0 as   u8));
+        let num1 = to_radix11(RadixNum::from(             1 as  u16));
+        let num2 = to_radix11(RadixNum::from(            10 as  u32));
+        let num3 = to_radix11(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix11(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix11(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix11(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix12_to_dec() {
+        let to_radix12 = |n: RadixNum| n.with_radix(12).expect("radix 12");
+        let num0 = to_radix12(RadixNum::from(             0 as   u8));
+        let num1 = to_radix12(RadixNum::from(             1 as  u16));
+        let num2 = to_radix12(RadixNum::from(            10 as  u32));
+        let num3 = to_radix12(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix12(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix12(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix12(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix13_to_dec() {
+        let to_radix13 = |n: RadixNum| n.with_radix(13).expect("radix 13");
+        let num0 = to_radix13(RadixNum::from(             0 as   u8));
+        let num1 = to_radix13(RadixNum::from(             1 as  u16));
+        let num2 = to_radix13(RadixNum::from(            10 as  u32));
+        let num3 = to_radix13(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix13(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix13(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix13(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix14_to_dec() {
+        let to_radix14 = |n: RadixNum| n.with_radix(14).expect("radix 14");
+        let num0 = to_radix14(RadixNum::from(             0 as   u8));
+        let num1 = to_radix14(RadixNum::from(             1 as  u16));
+        let num2 = to_radix14(RadixNum::from(            10 as  u32));
+        let num3 = to_radix14(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix14(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix14(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix14(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix15_to_dec() {
+        let to_radix15 = |n: RadixNum| n.with_radix(15).expect("radix 15");
+        let num0 = to_radix15(RadixNum::from(             0 as   u8));
+        let num1 = to_radix15(RadixNum::from(             1 as  u16));
+        let num2 = to_radix15(RadixNum::from(            10 as  u32));
+        let num3 = to_radix15(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix15(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix15(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix15(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix16_to_dec() {
+        let to_radix16 = |n: RadixNum| n.with_radix(16).expect("radix 16");
+        let num0 = to_radix16(RadixNum::from(             0 as   u8));
+        let num1 = to_radix16(RadixNum::from(             1 as  u16));
+        let num2 = to_radix16(RadixNum::from(            10 as  u32));
+        let num3 = to_radix16(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix16(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix16(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix16(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix17_to_dec() {
+        let to_radix17 = |n: RadixNum| n.with_radix(17).expect("radix 17");
+        let num0 = to_radix17(RadixNum::from(             0 as   u8));
+        let num1 = to_radix17(RadixNum::from(             1 as  u16));
+        let num2 = to_radix17(RadixNum::from(            10 as  u32));
+        let num3 = to_radix17(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix17(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix17(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix17(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix18_to_dec() {
+        let to_radix18 = |n: RadixNum| n.with_radix(18).expect("radix 18");
+        let num0 = to_radix18(RadixNum::from(             0 as   u8));
+        let num1 = to_radix18(RadixNum::from(             1 as  u16));
+        let num2 = to_radix18(RadixNum::from(            10 as  u32));
+        let num3 = to_radix18(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix18(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix18(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix18(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix19_to_dec() {
+        let to_radix19 = |n: RadixNum| n.with_radix(19).expect("radix 19");
+        let num0 = to_radix19(RadixNum::from(             0 as   u8));
+        let num1 = to_radix19(RadixNum::from(             1 as  u16));
+        let num2 = to_radix19(RadixNum::from(            10 as  u32));
+        let num3 = to_radix19(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix19(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix19(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix19(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix20_to_dec() {
+        let to_radix20 = |n: RadixNum| n.with_radix(20).expect("radix 20");
+        let num0 = to_radix20(RadixNum::from(             0 as   u8));
+        let num1 = to_radix20(RadixNum::from(             1 as  u16));
+        let num2 = to_radix20(RadixNum::from(            10 as  u32));
+        let num3 = to_radix20(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix20(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix20(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix20(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix21_to_dec() {
+        let to_radix21 = |n: RadixNum| n.with_radix(21).expect("radix 21");
+        let num0 = to_radix21(RadixNum::from(             0 as   u8));
+        let num1 = to_radix21(RadixNum::from(             1 as  u16));
+        let num2 = to_radix21(RadixNum::from(            10 as  u32));
+        let num3 = to_radix21(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix21(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix21(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix21(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix22_to_dec() {
+        let to_radix22 = |n: RadixNum| n.with_radix(22).expect("radix 22");
+        let num0 = to_radix22(RadixNum::from(             0 as   u8));
+        let num1 = to_radix22(RadixNum::from(             1 as  u16));
+        let num2 = to_radix22(RadixNum::from(            10 as  u32));
+        let num3 = to_radix22(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix22(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix22(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix22(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix23_to_dec() {
+        let to_radix23 = |n: RadixNum| n.with_radix(23).expect("radix 23");
+        let num0 = to_radix23(RadixNum::from(             0 as   u8));
+        let num1 = to_radix23(RadixNum::from(             1 as  u16));
+        let num2 = to_radix23(RadixNum::from(            10 as  u32));
+        let num3 = to_radix23(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix23(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix23(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix23(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix24_to_dec() {
+        let to_radix24 = |n: RadixNum| n.with_radix(24).expect("radix 24");
+        let num0 = to_radix24(RadixNum::from(             0 as   u8));
+        let num1 = to_radix24(RadixNum::from(             1 as  u16));
+        let num2 = to_radix24(RadixNum::from(            10 as  u32));
+        let num3 = to_radix24(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix24(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix24(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix24(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix25_to_dec() {
+        let to_radix25 = |n: RadixNum| n.with_radix(25).expect("radix 25");
+        let num0 = to_radix25(RadixNum::from(             0 as   u8));
+        let num1 = to_radix25(RadixNum::from(             1 as  u16));
+        let num2 = to_radix25(RadixNum::from(            10 as  u32));
+        let num3 = to_radix25(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix25(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix25(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix25(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix26_to_dec() {
+        let to_radix26 = |n: RadixNum| n.with_radix(26).expect("radix 26");
+        let num0 = to_radix26(RadixNum::from(             0 as   u8));
+        let num1 = to_radix26(RadixNum::from(             1 as  u16));
+        let num2 = to_radix26(RadixNum::from(            10 as  u32));
+        let num3 = to_radix26(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix26(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix26(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix26(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix27_to_dec() {
+        let to_radix27 = |n: RadixNum| n.with_radix(27).expect("radix 27");
+        let num0 = to_radix27(RadixNum::from(             0 as   u8));
+        let num1 = to_radix27(RadixNum::from(             1 as  u16));
+        let num2 = to_radix27(RadixNum::from(            10 as  u32));
+        let num3 = to_radix27(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix27(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix27(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix27(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix28_to_dec() {
+        let to_radix28 = |n: RadixNum| n.with_radix(28).expect("radix 28");
+        let num0 = to_radix28(RadixNum::from(             0 as   u8));
+        let num1 = to_radix28(RadixNum::from(             1 as  u16));
+        let num2 = to_radix28(RadixNum::from(            10 as  u32));
+        let num3 = to_radix28(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix28(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix28(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix28(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix29_to_dec() {
+        let to_radix29 = |n: RadixNum| n.with_radix(29).expect("radix 29");
+        let num0 = to_radix29(RadixNum::from(             0 as   u8));
+        let num1 = to_radix29(RadixNum::from(             1 as  u16));
+        let num2 = to_radix29(RadixNum::from(            10 as  u32));
+        let num3 = to_radix29(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix29(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix29(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix29(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix30_to_dec() {
+        let to_radix30 = |n: RadixNum| n.with_radix(30).expect("radix 30");
+        let num0 = to_radix30(RadixNum::from(             0 as   u8));
+        let num1 = to_radix30(RadixNum::from(             1 as  u16));
+        let num2 = to_radix30(RadixNum::from(            10 as  u32));
+        let num3 = to_radix30(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix30(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix30(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix30(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix31_to_dec() {
+        let to_radix31 = |n: RadixNum| n.with_radix(31).expect("radix 31");
+        let num0 = to_radix31(RadixNum::from(             0 as   u8));
+        let num1 = to_radix31(RadixNum::from(             1 as  u16));
+        let num2 = to_radix31(RadixNum::from(            10 as  u32));
+        let num3 = to_radix31(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix31(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix31(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix31(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix32_to_dec() {
+        let to_radix32 = |n: RadixNum| n.with_radix(32).expect("radix 32");
+        let num0 = to_radix32(RadixNum::from(             0 as   u8));
+        let num1 = to_radix32(RadixNum::from(             1 as  u16));
+        let num2 = to_radix32(RadixNum::from(            10 as  u32));
+        let num3 = to_radix32(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix32(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix32(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix32(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix33_to_dec() {
+        let to_radix33 = |n: RadixNum| n.with_radix(33).expect("radix 33");
+        let num0 = to_radix33(RadixNum::from(             0 as   u8));
+        let num1 = to_radix33(RadixNum::from(             1 as  u16));
+        let num2 = to_radix33(RadixNum::from(            10 as  u32));
+        let num3 = to_radix33(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix33(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix33(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix33(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix34_to_dec() {
+        let to_radix34 = |n: RadixNum| n.with_radix(34).expect("radix 34");
+        let num0 = to_radix34(RadixNum::from(             0 as   u8));
+        let num1 = to_radix34(RadixNum::from(             1 as  u16));
+        let num2 = to_radix34(RadixNum::from(            10 as  u32));
+        let num3 = to_radix34(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix34(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix34(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix34(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix35_to_dec() {
+        let to_radix35 = |n: RadixNum| n.with_radix(35).expect("radix 35");
+        let num0 = to_radix35(RadixNum::from(             0 as   u8));
+        let num1 = to_radix35(RadixNum::from(             1 as  u16));
+        let num2 = to_radix35(RadixNum::from(            10 as  u32));
+        let num3 = to_radix35(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix35(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix35(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix35(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
+    }
+
+    #[test]
+    fn radix36_to_dec() {
+        let to_radix36 = |n: RadixNum| n.with_radix(36).expect("radix 36");
+        let num0 = to_radix36(RadixNum::from(             0 as   u8));
+        let num1 = to_radix36(RadixNum::from(             1 as  u16));
+        let num2 = to_radix36(RadixNum::from(            10 as  u32));
+        let num3 = to_radix36(RadixNum::from(         32767 as  u64));
+        let num4 = to_radix36(RadixNum::from(   15123093122 as  u64));
+        let num5 = to_radix36(RadixNum::from(  462058535375 as u128));
+        let num6 = to_radix36(RadixNum::from(46597557513433 as u128));
+        assert_eq!(             Ok(0), num0.as_decimal());
+        assert_eq!(             Ok(1), num1.as_decimal());
+        assert_eq!(            Ok(10), num2.as_decimal());
+        assert_eq!(         Ok(32767), num3.as_decimal());
+        assert_eq!(   Ok(15123093122), num4.as_decimal());
+        assert_eq!(  Ok(462058535375), num5.as_decimal());
+        assert_eq!(Ok(46597557513433), num6.as_decimal());
     }
 
 }
