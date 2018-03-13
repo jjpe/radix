@@ -37,13 +37,13 @@ impl error::Error for RadixErr {
         use RadixErr::*;
 
         match *self {
+            RadixNotSupported(_) => "Radix not supported",
             EmptyInput => "Empty Input",
             FailedToPopFromStack => "Failed to pop from stack",
             FailedToUppercase => "Failed to uppercase",
             IllegalChar(_) => "Illegal char",
             IllegalDigit(_) => "Illegal digit",
             InvalidDigit{..} => "Invalid digit",
-            RadixNotSupported(_) => "Radix not supported",
         }
 
     }
@@ -58,13 +58,13 @@ impl fmt::Display for RadixErr {
         use RadixErr::*;
 
         match *self {
+            RadixNotSupported(ref us) => write!(f, "Radix not supported: {}", &us),
             EmptyInput => write!(f, "There was empty input when converting to Radix"),
             FailedToPopFromStack => write!(f, "Failed to pop from stack"),
             FailedToUppercase => write!(f, "Failed to convert character to uppercase"),
             IllegalChar(ref c) => write!(f, "Illegal character: {}", &c),
             IllegalDigit(ref us) => write!(f, "Illegal digit: {}", &us),
             InvalidDigit{digit: c, radix: us} => write!(f, "Invalid digit: {} {}", &c, &us),
-            RadixNotSupported(ref us) => write!(f, "Radix not supported: {}", &us),
         }
     }
 }
