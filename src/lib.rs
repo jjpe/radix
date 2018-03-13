@@ -1,7 +1,9 @@
 //! A rust library to deal with number conversion between radices.
-
 #![feature(conservative_impl_trait)]
 #![feature(i128_type)]
+
+use std::error;
+use std::fmt;
 
 const DEBUG: bool = false;
 
@@ -30,6 +32,42 @@ pub enum RadixErr {
     InvalidDigit { digit: char, radix: usize },
 }
 
+impl error::Error for RadixErr {
+    fn description(&self) -> &str {
+        use RadixErr::*;
+
+        match *self {
+            EmptyInput => "Empty Input",
+            FailedToPopFromStack => "Failed to pop from stack",
+            FailedToUppercase => "Failed to uppercase",
+            IllegalChar(_) => "Illegal char",
+            IllegalDigit(_) => "Illegal digit",
+            InvalidDigit{..} => "Invalid digit",
+            RadixNotSupported(_) => "Radix not supported",
+        }
+
+    }
+
+    fn cause(&self) -> Option<&error::Error> {
+        None
+    }
+}
+
+impl fmt::Display for RadixErr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use RadixErr::*;
+
+        match *self {
+            EmptyInput => write!(f, "There was empty input when converting to Radix"),
+            FailedToPopFromStack => write!(f, "Failed to pop from stack"),
+            FailedToUppercase => write!(f, "Failed to convert character to uppercase"),
+            IllegalChar(ref c) => write!(f, "Illegal character: {}", &c),
+            IllegalDigit(ref us) => write!(f, "Illegal digit: {}", &us),
+            InvalidDigit{digit: c, radix: us} => write!(f, "Invalid digit: {} {}", &c, &us),
+            RadixNotSupported(ref us) => write!(f, "Radix not supported: {}", &us),
+        }
+    }
+}
 
 const MAX_RADIX: usize = 36;
 
