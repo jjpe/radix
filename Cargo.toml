@@ -1,6 +1,6 @@
 [package]
 name = "radix"
-version = "0.3.5"
+version = "0.4.0"
 authors = ["Joey Ezechiëls <joey.ezechiels@gmail.com>"]
 description = "Convert any {u8, u16, u32, u64, u128, usize} to another radix"
 license = "MIT"
