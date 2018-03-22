@@ -70,9 +70,10 @@ impl fmt::Display for RadixErr {
 }
 
 const MAX_RADIX: usize = 36;
+const MIN_RADIX: usize = 2;
 
 fn is_radix_valid(radix: usize) -> bool {
-    radix <= MAX_RADIX
+    radix <= MAX_RADIX && radix >= MIN_RADIX
 }
 
 
@@ -270,6 +271,7 @@ impl RadixNum {
     }
 
     fn dec_to_radix_x(radix: usize, number: usize) -> RadixResult<String> {
+        if !is_radix_valid(radix) { return Err(RadixErr::RadixNotSupported(radix)); }
         if number == 0 { return Ok(String::from("0")) }
 
         let digits: Vec<char> = number.to_string().chars().collect();
@@ -417,6 +419,12 @@ mod tests {
         assert_eq!(vec!['D', 'E', 'A', 'D', 'B', 'E', 'E', 'F'], digits);
     }
 
+    #[test]
+    fn dec_to_radix_bad() {
+        assert!(RadixNum::from(10 as u8).with_radix(0).is_err());
+        assert!(RadixNum::from(10 as u8).with_radix(1).is_err());
+        assert!(RadixNum::from(10 as u8).with_radix(37).is_err());
+    }
 
     #[test]
     fn dec_to_radix2() {
