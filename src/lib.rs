@@ -1,6 +1,4 @@
 //! A rust library to deal with number conversion between radices.
-#![feature(conservative_impl_trait)]
-#![feature(i128_type)]
 
 use std::error;
 use std::fmt;
