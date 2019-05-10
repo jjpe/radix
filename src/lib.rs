@@ -392,6 +392,7 @@ impl From<u128> for RadixNum {
 
 // Helper functions
 
+#[inline(always)]
 fn modulus(a: usize, b: usize) -> usize {
     ((a % b) + b) % b
 }
