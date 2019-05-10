@@ -365,27 +365,27 @@ impl RadixNum {
 }
 
 impl From<usize> for RadixNum {
-    fn from(decimal: usize) -> RadixNum {  RadixNum::Radix10(decimal.to_string())  }
+    fn from(decimal: usize) -> RadixNum { RadixNum::Radix10(decimal.to_string()) }
 }
 
 impl From<u8> for RadixNum {
-    fn from(decimal: u8) -> RadixNum {  RadixNum::Radix10(decimal.to_string())  }
+    fn from(decimal: u8) -> RadixNum { RadixNum::Radix10(decimal.to_string()) }
 }
 
 impl From<u16> for RadixNum {
-    fn from(decimal: u16) -> RadixNum {  RadixNum::Radix10(decimal.to_string())  }
+    fn from(decimal: u16) -> RadixNum { RadixNum::Radix10(decimal.to_string()) }
 }
 
 impl From<u32> for RadixNum {
-    fn from(decimal: u32) -> RadixNum {  RadixNum::Radix10(decimal.to_string())  }
+    fn from(decimal: u32) -> RadixNum { RadixNum::Radix10(decimal.to_string()) }
 }
 
 impl From<u64> for RadixNum {
-    fn from(decimal: u64) -> RadixNum {  RadixNum::Radix10(decimal.to_string())  }
+    fn from(decimal: u64) -> RadixNum { RadixNum::Radix10(decimal.to_string()) }
 }
 
 impl From<u128> for RadixNum {
-    fn from(decimal: u128) -> RadixNum {  RadixNum::Radix10(decimal.to_string())  }
+    fn from(decimal: u128) -> RadixNum { RadixNum::Radix10(decimal.to_string()) }
 }
 
 
