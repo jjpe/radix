@@ -366,6 +366,17 @@ impl RadixNum {
     }
 }
 
+impl fmt::Display for RadixNum {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.radix() {
+            2  => write!(f, "0b{}", self.as_str()),
+            8  => write!(f, "0{}",  self.as_str()),
+            16 => write!(f, "0x{}", self.as_str()),
+            _ => write!(f, "{}r{}", self.as_str(), self.radix())
+        }
+    }
+}
+
 impl From<usize> for RadixNum {
     fn from(decimal: usize) -> RadixNum { RadixNum::Radix10(decimal.to_string()) }
 }
@@ -404,6 +415,19 @@ fn modulus(a: usize, b: usize) -> usize {
 #[cfg(test)]
 mod tests {
     use *;
+
+    #[test]
+    fn display() -> RadixResult<()> {
+        let num = RadixNum::from(3735928559 as u128);
+        assert_eq!(
+            "0b11011110101011011011111011101111",
+            format!("{}", num.with_radix(2)?)
+        );
+        assert_eq!("033653337357", format!("{}", num.with_radix( 8)?));
+        assert_eq!("0xDEADBEEF",   format!("{}", num.with_radix(16)?));
+        assert_eq!("3FARFNFr32",   format!("{}", num.with_radix(32)?));
+        Ok(())
+    }
 
     #[test]
     fn from_str() {
