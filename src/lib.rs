@@ -118,22 +118,35 @@ pub enum RadixNum {
 }
 
 impl RadixNum {
-    /// Convert a `number` encoded in a certain `radix` to a `RadixNum`.
-    pub fn from_str(number: &str, radix: usize) -> RadixResult<Self> {
-        if number.is_empty() { return Err(RadixErr::EmptyInput); }
-        if !is_radix_valid(radix) { return Err(RadixErr::RadixNotSupported(radix)); }
-        let number: String = number.trim().to_uppercase();
+    /// Convert a `base` encoded in a certain `radix` to a `RadixNum`.
+    pub fn from_str(base: &str, radix: usize) -> RadixResult<Self> {
+        Self::validate_radix(radix)?;
+        let base: String = Self::validate_base(&base, radix)?;
+        let dec_str: String = Self::radix_x_to_dec(radix, &base)?.to_string();
+        RadixNum::Radix10(dec_str).with_radix(radix)
+    }
 
+    #[inline(always)]
+    fn validate_radix(radix: usize) -> RadixResult<()> {
+        if !is_radix_valid(radix) {
+            return Err(RadixErr::RadixNotSupported(radix));
+        }
+        Ok(())
+    }
+
+    #[inline(always)]
+    fn validate_base(base: &str, radix: usize) -> RadixResult<String> {
+        if base.is_empty() { return Err(RadixErr::EmptyInput); }
+        let base: String = base.trim().to_uppercase();
         let is_valid_digit = |d| {
             let x = '0' <= d  &&  d <= '9';
             let y = 'A' <= d  &&  d <= ('A' as usize + radix - 10) as u8 as char;
             x || y
         };
-        for digit in number.chars() { if !is_valid_digit(digit) {
+        for digit in base.chars() { if !is_valid_digit(digit) {
             return Err(RadixErr::InvalidDigit { digit, radix });
         }}
-        let dec_str: String = Self::radix_x_to_dec(radix, &number)?.to_string();
-        RadixNum::Radix10(dec_str).with_radix(radix)
+        Ok(base)
     }
 
     pub fn as_str(&self) -> &str {
