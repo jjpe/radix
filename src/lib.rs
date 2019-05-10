@@ -73,7 +73,7 @@ const MAX_RADIX: usize = 36;
 const MIN_RADIX: usize = 2;
 
 fn is_radix_valid(radix: usize) -> bool {
-    radix <= MAX_RADIX && radix >= MIN_RADIX
+    radix >= MIN_RADIX && radix <= MAX_RADIX
 }
 
 
@@ -122,8 +122,8 @@ impl RadixNum {
     pub fn from_str(base: &str, radix: usize) -> RadixResult<Self> {
         Self::validate_radix(radix)?;
         let base: String = Self::validate_base(&base, radix)?;
-        let dec_str: String = Self::radix_x_to_dec(&base, radix)?.to_string();
-        RadixNum::Radix10(dec_str).with_radix(radix)
+        let decimal: String = Self::radix_x_to_dec(&base, radix)?.to_string();
+        RadixNum::Radix10(decimal).with_radix(radix)
     }
 
     #[inline(always)]
@@ -284,26 +284,23 @@ impl RadixNum {
     }
 
     fn dec_to_radix_x(number: usize, radix: usize) -> RadixResult<String> {
-        if !is_radix_valid(radix) { return Err(RadixErr::RadixNotSupported(radix)); }
+        Self::validate_radix(radix)?;
         if number == 0 { return Ok(String::from("0")) }
 
-        let digits: Vec<char> = number.to_string().chars().collect();
         let mut number: usize = number;
         let mut stack: Vec<char> = vec![];
+        let get_offset = |digit: usize| -> RadixResult<u8> {
+            match digit {
+                0 ... 9 => Ok('0' as u8), //  1u8 => '1',   2u8 =>  '2',  etc
+                10 ... 36 => Ok(55),      // 10u8 => 'A',  11u8 =>  'B',  etc
+                d => Err(RadixErr::IllegalDigit(d)),
+            }
+        };
 
         debug!("\n");
         debug!("[dec_to_radix_x] radix:   {:?}", radix);
         debug!("[dec_to_radix_x] number: {:?}", number);
-        debug!("[dec_to_radix_x] digits: {:?}", digits);
         debug!("[dec_to_radix_x] stack: {:?}", stack);
-
-        let get_offset = |digit: usize| -> RadixResult<u8> {
-            match digit {
-                0 ...  9 => Ok('0' as u8), //  1u8 => '1',   2u8 =>  '2',  etc
-                10 ... 36 => Ok(55),       // 10u8 => 'A',  11u8 =>  'B',  etc
-                d => Err(RadixErr::IllegalDigit(d)),
-            }
-        };
 
         debug!("[dec_to_radix_x] loop:");
         while number > 0 {
@@ -326,21 +323,16 @@ impl RadixNum {
 
         let mut return_val: String = String::new();
         while !stack.is_empty() {
-            match stack.pop() {
-                Some(digit) => return_val += digit.to_string().as_ref(),
-                None => return Err(RadixErr::FailedToPopFromStack),
-            }
+            let digit = stack.pop().ok_or(RadixErr::FailedToPopFromStack)?;
+            return_val.push(digit);
         }
         debug!("[dec_to_radix_x] return_val: {}", return_val);
         Ok(return_val)
     }
 
-    fn radix_x_to_dec(number: &str, radix: usize) -> RadixResult<usize> {
-        if number.is_empty() { return Err(RadixErr::EmptyInput); }
-
-        let number: &str = number.trim();
-        let number_chars: Vec<char> = number.chars().collect();
-        let char_count: usize = number_chars.len();
+    fn radix_x_to_dec(base: &str, radix: usize) -> RadixResult<usize> {
+        Self::validate_radix(radix)?;
+        let base: String = Self::validate_base(base, radix)?;
         let mut return_val: usize = 0;
 
         #[inline(always)]
@@ -354,17 +346,14 @@ impl RadixNum {
 
         debug!("\n");
         debug!("[radix_x_to_dec] input radix: {}", radix);
-        debug!("[radix_x_to_dec] input number: {}", number);
-        debug!("[radix_x_to_dec] trimmed number: {}", number);
-        debug!("[radix_x_to_dec] char count: {}", char_count);
-        debug!("[radix_x_to_dec] char vec: {:?}", number_chars);
+        debug!("[radix_x_to_dec] input base: {}", base);
         debug!("[radix_x_to_dec] return val: {:?}", return_val);
         debug!("[radix_x_to_dec] for loop:");
-        for (idx, &token) in number_chars.iter().rev().enumerate() {
+        for (idx, token) in base.chars().rev().enumerate() {
             let digit: char = token
                 .to_uppercase()
                 .nth(0)
-                .ok_or_else(|| RadixErr::FailedToUppercase)?;
+                .ok_or(RadixErr::FailedToUppercase)?;
             let dec_value: usize = digit_to_dec(digit)? * radix.pow(idx as u32);
             return_val += dec_value;
             debug!("[radix_x_to_dec]   idx: {:?}", idx);
