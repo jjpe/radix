@@ -266,8 +266,8 @@ impl RadixNum {
         Self::radix_x_to_dec(self.radix(), self.as_str())
     }
 
-    pub fn digits<'c>(&'c self) -> impl Iterator<Item=char> {
-        self.as_str().chars().collect::<Vec<char>>().into_iter()
+    pub fn digits<'c>(&'c self) -> impl Iterator<Item=char> + 'c {
+        self.as_str().chars()
     }
 
     fn dec_to_radix_x(radix: usize, number: usize) -> RadixResult<String> {
