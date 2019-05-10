@@ -122,7 +122,7 @@ impl RadixNum {
     pub fn from_str(base: &str, radix: usize) -> RadixResult<Self> {
         Self::validate_radix(radix)?;
         let base: String = Self::validate_base(&base, radix)?;
-        let dec_str: String = Self::radix_x_to_dec(radix, &base)?.to_string();
+        let dec_str: String = Self::radix_x_to_dec(&base, radix)?.to_string();
         RadixNum::Radix10(dec_str).with_radix(radix)
     }
 
@@ -193,7 +193,7 @@ impl RadixNum {
     /// the represented value, but it does change its representation.
     pub fn with_radix(&self, radix: usize) -> RadixResult<Self> {
         let digits_radix_x: String =
-            Self::dec_to_radix_x(radix,  self.as_decimal()?)?;
+            Self::dec_to_radix_x(self.as_decimal()?, radix)?;
         Ok(match radix {
              2 => RadixNum::Radix2(digits_radix_x),
              3 => RadixNum::Radix3(digits_radix_x),
@@ -276,14 +276,14 @@ impl RadixNum {
     }
 
     pub fn as_decimal(&self) -> RadixResult<usize> {
-        Self::radix_x_to_dec(self.radix(), self.as_str())
+        Self::radix_x_to_dec(self.as_str(), self.radix())
     }
 
     pub fn digits<'c>(&'c self) -> impl Iterator<Item=char> + 'c {
         self.as_str().chars()
     }
 
-    fn dec_to_radix_x(radix: usize, number: usize) -> RadixResult<String> {
+    fn dec_to_radix_x(number: usize, radix: usize) -> RadixResult<String> {
         if !is_radix_valid(radix) { return Err(RadixErr::RadixNotSupported(radix)); }
         if number == 0 { return Ok(String::from("0")) }
 
@@ -335,7 +335,7 @@ impl RadixNum {
         Ok(return_val)
     }
 
-    fn radix_x_to_dec(radix: usize, number: &str) -> RadixResult<usize> {
+    fn radix_x_to_dec(number: &str, radix: usize) -> RadixResult<usize> {
         if number.is_empty() { return Err(RadixErr::EmptyInput); }
 
         let number: &str = number.trim();
