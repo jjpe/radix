@@ -32,18 +32,15 @@ pub enum RadixErr {
 
 impl error::Error for RadixErr {
     fn description(&self) -> &str {
-        use RadixErr::*;
-
         match *self {
-            RadixNotSupported(_) => "Radix not supported",
-            EmptyInput => "Empty Input",
-            FailedToPopFromStack => "Failed to pop from stack",
-            FailedToUppercase => "Failed to uppercase",
-            IllegalChar(_) => "Illegal char",
-            IllegalDigit(_) => "Illegal digit",
-            InvalidDigit{..} => "Invalid digit",
+            RadixErr::RadixNotSupported(_) => "Radix not supported",
+            RadixErr::EmptyInput => "Empty Input",
+            RadixErr::FailedToPopFromStack => "Failed to pop from stack",
+            RadixErr::FailedToUppercase => "Failed to uppercase",
+            RadixErr::IllegalChar(_) => "Illegal char",
+            RadixErr::IllegalDigit(_) => "Illegal digit",
+            RadixErr::InvalidDigit{..} => "Invalid digit",
         }
-
     }
 
     fn cause(&self) -> Option<&error::Error> {
@@ -53,16 +50,21 @@ impl error::Error for RadixErr {
 
 impl fmt::Display for RadixErr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use RadixErr::*;
-
         match *self {
-            RadixNotSupported(ref us) => write!(f, "Radix not supported: {}", &us),
-            EmptyInput => write!(f, "There was empty input when converting to Radix"),
-            FailedToPopFromStack => write!(f, "Failed to pop from stack"),
-            FailedToUppercase => write!(f, "Failed to convert character to uppercase"),
-            IllegalChar(ref c) => write!(f, "Illegal character: {}", &c),
-            IllegalDigit(ref us) => write!(f, "Illegal digit: {}", &us),
-            InvalidDigit{digit: c, radix: us} => write!(f, "Invalid digit: {} {}", &c, &us),
+            RadixErr::RadixNotSupported(ref us) =>
+                write!(f, "Radix not supported: {}", &us),
+            RadixErr::EmptyInput =>
+                write!(f, "There was empty input when converting to Radix"),
+            RadixErr::FailedToPopFromStack =>
+                write!(f, "Failed to pop from stack"),
+            RadixErr::FailedToUppercase =>
+                write!(f, "Failed to convert character to uppercase"),
+            RadixErr::IllegalChar(ref c) =>
+                write!(f, "Illegal character: {}", &c),
+            RadixErr::IllegalDigit(ref us) =>
+                write!(f, "Illegal digit: {}", &us),
+            RadixErr::InvalidDigit{digit: c, radix: us} =>
+                write!(f, "Invalid digit: {} {}", &c, &us),
         }
     }
 }
@@ -122,7 +124,7 @@ impl RadixNum {
         if !is_radix_valid(radix) { return Err(RadixErr::RadixNotSupported(radix)); }
         let number: String = number.trim().to_uppercase();
 
-        let is_valid_digit = |d|  {
+        let is_valid_digit = |d| {
             let x = '0' <= d  &&  d <= '9';
             let y = 'A' <= d  &&  d <= ('A' as usize + radix - 10) as u8 as char;
             x || y
@@ -136,14 +138,14 @@ impl RadixNum {
 
     pub fn as_str(&self) -> &str {
         match *self {
-             RadixNum::Radix2(ref string) |
-             RadixNum::Radix3(ref string) |
-             RadixNum::Radix4(ref string) |
-             RadixNum::Radix5(ref string) |
-             RadixNum::Radix6(ref string) |
-             RadixNum::Radix7(ref string) |
-             RadixNum::Radix8(ref string) |
-             RadixNum::Radix9(ref string) |
+            RadixNum::Radix2(ref string) |
+            RadixNum::Radix3(ref string) |
+            RadixNum::Radix4(ref string) |
+            RadixNum::Radix5(ref string) |
+            RadixNum::Radix6(ref string) |
+            RadixNum::Radix7(ref string) |
+            RadixNum::Radix8(ref string) |
+            RadixNum::Radix9(ref string) |
             RadixNum::Radix10(ref string) |
             RadixNum::Radix11(ref string) |
             RadixNum::Radix12(ref string) |
@@ -180,14 +182,14 @@ impl RadixNum {
         let digits_radix_x: String =
             Self::dec_to_radix_x(radix,  self.as_decimal()?)?;
         Ok(match radix {
-             2 =>  RadixNum::Radix2(digits_radix_x),
-             3 =>  RadixNum::Radix3(digits_radix_x),
-             4 =>  RadixNum::Radix4(digits_radix_x),
-             5 =>  RadixNum::Radix5(digits_radix_x),
-             6 =>  RadixNum::Radix6(digits_radix_x),
-             7 =>  RadixNum::Radix7(digits_radix_x),
-             8 =>  RadixNum::Radix8(digits_radix_x),
-             9 =>  RadixNum::Radix9(digits_radix_x),
+             2 => RadixNum::Radix2(digits_radix_x),
+             3 => RadixNum::Radix3(digits_radix_x),
+             4 => RadixNum::Radix4(digits_radix_x),
+             5 => RadixNum::Radix5(digits_radix_x),
+             6 => RadixNum::Radix6(digits_radix_x),
+             7 => RadixNum::Radix7(digits_radix_x),
+             8 => RadixNum::Radix8(digits_radix_x),
+             9 => RadixNum::Radix9(digits_radix_x),
             10 => RadixNum::Radix10(digits_radix_x),
             11 => RadixNum::Radix11(digits_radix_x),
             12 => RadixNum::Radix12(digits_radix_x),
@@ -222,14 +224,14 @@ impl RadixNum {
     /// Retrieve the radix that `self` is encoded with.
     pub fn radix(&self) -> usize {
         match *self {
-             RadixNum::Radix2(_) => 2,
-             RadixNum::Radix3(_) => 3,
-             RadixNum::Radix4(_) => 4,
-             RadixNum::Radix5(_) => 5,
-             RadixNum::Radix6(_) => 6,
-             RadixNum::Radix7(_) => 7,
-             RadixNum::Radix8(_) => 8,
-             RadixNum::Radix9(_) => 9,
+            RadixNum::Radix2(_) => 2,
+            RadixNum::Radix3(_) => 3,
+            RadixNum::Radix4(_) => 4,
+            RadixNum::Radix5(_) => 5,
+            RadixNum::Radix6(_) => 6,
+            RadixNum::Radix7(_) => 7,
+            RadixNum::Radix8(_) => 8,
+            RadixNum::Radix9(_) => 9,
             RadixNum::Radix10(_) => 10,
             RadixNum::Radix11(_) => 11,
             RadixNum::Radix12(_) => 12,
@@ -285,7 +287,7 @@ impl RadixNum {
         let get_offset = |digit: usize| -> RadixResult<u8> {
             match digit {
                 0 ...  9 => Ok('0' as u8), //  1u8 => '1',   2u8 =>  '2',  etc
-                10 ... 36 => Ok(55),        // 10u8 => 'A',  11u8 =>  'B',  etc
+                10 ... 36 => Ok(55),       // 10u8 => 'A',  11u8 =>  'B',  etc
                 d => Err(RadixErr::IllegalDigit(d)),
             }
         };
