@@ -136,8 +136,9 @@ impl RadixNum {
 
     #[inline(always)]
     fn validate_base(base: &str, radix: usize) -> RadixResult<String> {
+        let base: &str = base.trim();
         if base.is_empty() { return Err(RadixErr::EmptyInput); }
-        let base: String = base.trim().to_uppercase();
+        let base: String = base.to_uppercase();
         let is_valid_digit = |d| {
             let x = '0' <= d && d <= '9';
             let y = 'A' <= d && d <= ('A' as usize + radix - 10) as u8 as char;
