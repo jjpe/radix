@@ -73,7 +73,7 @@ const MAX_RADIX: usize = 36;
 const MIN_RADIX: usize = 2;
 
 fn is_radix_valid(radix: usize) -> bool {
-    radix >= MIN_RADIX && radix <= MAX_RADIX
+    MIN_RADIX <= radix && radix <= MAX_RADIX
 }
 
 
@@ -139,8 +139,8 @@ impl RadixNum {
         if base.is_empty() { return Err(RadixErr::EmptyInput); }
         let base: String = base.trim().to_uppercase();
         let is_valid_digit = |d| {
-            let x = '0' <= d  &&  d <= '9';
-            let y = 'A' <= d  &&  d <= ('A' as usize + radix - 10) as u8 as char;
+            let x = '0' <= d && d <= '9';
+            let y = 'A' <= d && d <= ('A' as usize + radix - 10) as u8 as char;
             x || y
         };
         for digit in base.chars() { if !is_valid_digit(digit) {
