@@ -4,6 +4,7 @@ version = "0.5.0"
 authors = ["Joey Ezechiëls <joey.ezechiels@gmail.com>"]
 description = "Convert any {u8, u16, u32, u64, u128, usize} to another radix"
 license = "MIT"
+edition = "2018"
 repository = "http://github.com/jjpe/radix"
 
 [dependencies]

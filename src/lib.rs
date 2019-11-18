@@ -43,9 +43,7 @@ impl error::Error for RadixErr {
         }
     }
 
-    fn cause(&self) -> Option<&error::Error> {
-        None
-    }
+    fn cause(&self) -> Option<&dyn error::Error> { None }
 }
 
 impl fmt::Display for RadixErr {
@@ -292,8 +290,8 @@ impl RadixNum {
         let mut stack: Vec<char> = vec![];
         let get_offset = |digit: usize| -> RadixResult<u8> {
             match digit {
-                0 ... 9 => Ok('0' as u8), //  1u8 => '1',   2u8 =>  '2',  etc
-                10 ... 36 => Ok(55),      // 10u8 => 'A',  11u8 =>  'B',  etc
+                0 ..= 9 => Ok('0' as u8), //  1u8 => '1',   2u8 =>  '2',  etc
+                10 ..= 36 => Ok(55),      // 10u8 => 'A',  11u8 =>  'B',  etc
                 d => Err(RadixErr::IllegalDigit(d)),
             }
         };
@@ -339,8 +337,8 @@ impl RadixNum {
         #[inline(always)]
         fn digit_to_dec(digit: char) -> Result<usize, RadixErr> {
             match digit {
-                '0'...'9' => Ok(digit as usize - '0' as u8 as usize),
-                'A'...'Z' => Ok(digit as usize - 55),
+                '0'..='9' => Ok(digit as usize - '0' as u8 as usize),
+                'A'..='Z' => Ok(digit as usize - 55),
                 c => Err(RadixErr::IllegalChar(c)),
             }
         }
