@@ -413,7 +413,7 @@ fn modulus(a: usize, b: usize) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use *;
+    use crate::*;
 
     #[test]
     fn display() -> RadixResult<()> {
